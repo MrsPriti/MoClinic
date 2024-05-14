@@ -1,0 +1,252 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patients Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* Custom CSS for the sidebar and main content */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 100;
+            padding: 48px 0 0;
+            box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+        }
+
+        .sidebar-sticky {
+            position: relative;
+            top: 0;
+            height: calc(100vh - 48px);
+            padding-top: .5rem;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        .main-content {
+            margin-left: 240px; /* Adjust based on sidebar width */
+        }
+    </style>
+</head>
+<body>
+
+<!-- Top Navigation -->
+<nav class="navbar navbar-dark bg-dark fixed-top">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarToggle">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+            </li>
+        </ul>
+        <form class="form-inline">
+            <button class="btn btn-outline-danger my-2 my-sm-0" type="button">Logout</button>
+        </form>
+    </div>
+</nav>
+
+<!-- Side Navigation -->
+<div class="container-fluid">
+    <div class="row">
+        <nav class="col-md-3 col-lg-2 bg-light sidebar">
+            <div class="sidebar-sticky">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Option 1</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Option 2</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Option 3</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Option 4</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</div>
+
+<!-- Page Content -->
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 main-content">
+    <div class="container mt-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Patients List</li>
+            </ol>
+        </nav>
+        <h2>Patients List</h2>
+        <button type="button" class="btn btn-primary mt-3 mb-3" data-toggle="modal" data-target="#addPatientModal">Add Patient</button>
+        <table class="table" id="patientsTable">
+            <thead>
+            <tr>
+                <th>Patient ID</th>
+                <th>Name</th>
+                <th>Mobile</th>
+                <th>Age</th>
+                <th>Symptoms</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Table rows will be populated dynamically -->
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<!-- Add Patient Modal -->
+<div class="modal fade" id="addPatientModal" tabindex="-1" role="dialog" aria-labelledby="addPatientModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addPatientModalLabel">Add Patient</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Add Patient Form goes here -->
+                <form id="addPatientForm">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" class="form-control" name="name" id="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="mobile">Mobile Number</label>
+                        <input type="text" class="form-control" name="mobile" id="mobile" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="age">Age</label>
+                        <input type="number" class="form-control" name="age" id="age" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="symptom">Symptoms</label>
+                        <textarea class="form-control" name="symptom" id="symptom" rows="3">Regular Checkup</textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Function to fetch and populate patient data
+        function populatePatients() {
+            $.ajax({
+                url: "{% url 'patient_details' %}", // Replace with your API endpoint
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    console.log(data);
+                    if (data.length === 0) {
+                        $('#patientsTable tbody').html('<tr><td colspan="5">No data found</td></tr>');
+                    } else {
+                        $('#patientsTable tbody').empty();
+                        $.each(data, function(index, patient) {
+                            $('#patientsTable tbody').append('<tr>' +
+                                '<td>' + patient.patientid + '</td>' +
+                                '<td>' + patient.name + '</td>' +
+                                '<td>' + patient.mobile + '</td>' +
+                                '<td>' + patient.age + '</td>' +
+                                '<td>' + patient.symptom + '</td>' +
+                                '</tr>');
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching patient data:', error);
+                }
+            });
+        }
+
+        // Call the function initially
+        populatePatients();
+        //setInterval(populatePatients, 30000);
+        // Optionally, you can refresh the data periodically
+        setInterval(populatePatients, 5000); // Refresh every 5 seconds
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+        
+        // Function to collect form data and add patient
+        $('#addPatientForm').submit(function(event) {
+            event.preventDefault(); // Prevent the default form submission
+            var modal = document.getElementById("#addPatientModal");
+            // Collect form data
+            var formData = {
+                'name': $('input[name=name]').val(),
+                'mobile': $('input[name=mobile]').val(),
+                'age': $('input[name=age]').val(),
+                'symptom': $('textarea[name=symptom]').val()
+            };
+
+            // Display confirmation swal
+            Swal.fire({
+                title: 'Do you want to add patient?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No'
+            }).then(function(result) {
+                if (result.isConfirmed) {
+                    // Send data to API via POST request
+                    $.ajax({
+                        url: "{% url 'patient_details' %}", // Replace with your API endpoint
+                        type: 'POST',
+                        dataType: 'json',
+                        data: formData,
+                        success: function(response) {
+                            // Display success swal
+                            Swal.fire({
+                                title: 'Patient added successfully',
+                                icon: 'success',
+                                showConfirmButton: false,
+                                timer: 2000,
+                                timerProgressBar: true,
+                            }).then(function() {
+                                // Close the modal
+                                $('#addPatientModal').css('display', 'none');
+                                //modal.style.display="none";
+                                document.querySelector(".modal-backdrop").remove();
+
+                            });
+                        },
+                        error: function(xhr, status, error) {
+                            // Display error swal
+                            Swal.fire({
+                                title: 'An error occurred',
+                                icon: 'error',
+                                showConfirmButton: false,
+                                timer: 2000,
+                                timerProgressBar: true
+                            });
+                            console.error('Error adding patient:', error);
+                        }
+                    });
+                }
+            });
+        });
+    });
+</script>
+
+</body>
+</html>
