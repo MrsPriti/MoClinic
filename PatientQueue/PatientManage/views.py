@@ -8,6 +8,9 @@ from .models import PatientDetails
 
 
 #render views
+def index(request):
+    return render(request,'index.html')
+
 def patientDetails(request):
     return render(request,'patients.html')
 
