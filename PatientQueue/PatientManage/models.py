@@ -7,4 +7,5 @@ class PatientDetails(models.Model):
     name = models.CharField(_("Name"), max_length=50,blank=False,null=False)
     mobile = models.CharField(_("Mobile Number"), max_length=13,blank=False,null=False)
     age = models.IntegerField(_("Age"),blank=False,null=False)
+    height = models.FloatField(_("height"))
     symptom = models.TextField(_("Symptoms"),default="Regular Checkup")

@@ -1,0 +1,219 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"></head>
+<body>
+    <style>
+        body{
+            font-family: 'Roboto', sans-serif;
+            height: 100%;
+            width: 100%;
+        }
+        *{
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            text-decoration: none;
+        }
+        .sidebar{
+            position: fixed;
+            left: 0;
+            width: 400px;
+            height: 100%;
+            background: #64e8c9;
+            z-index: 100;
+        }
+        .sidebar header{
+            font-size: 22px;
+            color: white;
+            text-align: center;
+            line-height: 70px;
+            background: #01a496;
+            user-select: none;
+        }
+        .sidebar ul p{
+            display: block;
+            height: 100%;
+            width: 100%;
+            line-height: 65px;
+            font-size: 20px;
+            color: white;
+            padding-left: 40px;
+            box-sizing: border-box;
+            border-top: 1px solid rgba(255,255,255,.1);
+            border-bottom: 1px solid black;
+        }
+        ul li:hover p{
+            padding-left: 50px;
+        }
+        .sidebar ul i{
+            margin-right: 16px;
+        }
+        .sidebar ul img{
+            margin-right: 16px;
+            height: 25px;
+            width: 25px;
+        }
+
+        .main-content{
+            margin-left: 450px;
+        }
+        .main-content header{
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 1.5rem;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+            position: fixed;
+            left: 450px;
+            width: calc(100% - 450px);
+            top: 0;
+            z-index: 100;
+        }
+        header h1{
+            color: #222;
+        }
+        header label span{
+            font-size: 1.7rem;
+            padding-right: 1rem;
+        }
+        main{
+            margin-top: 80px;
+            padding: 1rem 1rem;
+            background: #f1f5f9;
+            min-height: calc(100vh - 90px);
+        }
+        .cards{
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-gap:2rem;
+            margin-top: 1rem;
+        }
+        .card-single{
+            display: flex;
+            justify-content: space-between;
+            background: #fff;
+            padding: 2rem;
+            border-radius: 2px;
+        }
+        .card-single span:first-child{
+            font-size: 3rem;
+        }
+        .card-single img{
+            height: 80px;
+            width: 80px;
+        }
+    </style>
+
+    <div class="sidebar">
+        <header>Patient Details</header>      
+        <ul>
+            <li><p><i class="fa-solid fa-user"></i> Name : Sandhya Rani Behera</li></p>
+            <li><p><i class="fa-solid fa-mobile"></i> Mobile Number : 7345679987</li></p>
+            <li><p><img src="{% static 'images/a.png' %}" alt="">Age : 24</p></li>
+        </ul> 
+    </div>
+    
+    <div class="main-content">
+        <header>
+            <h1>
+                <label for="">
+                    <span class="las la-bars"></span>
+                </label>
+                Doctor's Dashboard
+            </h1>
+        </header>
+
+        <main>
+            <div class="cards">
+                <div class="card-single">
+                    <div>
+                        <h1>5.2 Fit</h1>
+                        <span>Height</span>
+                    </div>
+                    <div>
+                        <img src="{% static 'images/hi.png' %}" alt="">
+                    </div>
+                </div>
+
+                <div class="card-single">
+                    <div>
+                        <h1>54 Kg</h1>
+                        <span>Weight</span>
+                    </div>
+                    <div>
+                        <img src="{% static 'images/w.png' %}" alt="">
+                    </div>
+                </div>
+
+                <div class="card-single">
+                    <div>
+                        <h1>98.2 F</h1>
+                        <span>Temprature</span>
+                    </div>
+                    <div>
+                        <img src="{% static 'images/t.png' %}" alt="">
+                    </div>
+                </div><br>
+
+                <div class="card-single">
+                    <div>
+                        <h1>120/81</h1>
+                        <span>Blood Pressure</span>
+                    </div>
+                    <div>
+                        <img src="{% static 'images/bp.png' %}" alt="">
+                    </div>
+                </div>
+
+                <div class="card-single">
+                    <div>
+                        <h1>80-110</h1>
+                        <span>Blood Sugar</span>
+                    </div>
+                    <div>
+                        <img src="{% static 'images/bs.png' %}" alt="">
+                    </div>
+                </div>
+
+                <div class="card-single">
+                    <div>
+                        <h1>60-100</h1>
+                        <span>Heart Rate</span>
+                    </div>
+                    <div>
+                        <img src="{% static 'images/h2.png' %}" alt="">
+                    </div>
+                </div><br>
+
+                <div class="card-single">
+                    <div>
+                        <h1>98%</h1>
+                        <span>Oxygen Label</span>
+                    </div>
+                    <div>
+                        <img src="{% static 'images/o2.png' %}" alt="">
+                    </div>
+                </div>
+
+                <div class="card-single">
+                    <div>
+                        <h1>60-100</h1>
+                        <span>Pulse Rate</span>
+                    </div>
+                    <div>
+                        <img src="{% static 'images/pr.png' %}" alt="">
+                    </div>
+                </div>
+            </div><br>
+            <div>
+                <textarea rows="10" cols="100" placeholder="Patient Issues"></textarea>
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

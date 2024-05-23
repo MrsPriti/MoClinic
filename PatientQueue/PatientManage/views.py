@@ -1,9 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.http import JsonResponse
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from .models import PatientDetails
+from django.contrib.auth import authenticate,login,logout
+from django.contrib.auth.models import User
 # Create your views here.
 
 
@@ -14,6 +16,30 @@ def index(request):
 def patientDetails(request):
     return render(request,'patients.html')
 
+
+def doctorDashboard(request):
+    return render(request,'dr_d3.html')
+
+
+def signin(request):
+    if request.method=='POST':
+        username = request.POST.get('username','')
+        pwd = request.POST.get('password','')
+        user = authenticate(username=username,password=pwd)
+        if user is not None:
+            login(request,user)
+            if user.is_staff:
+                return redirect('doctorDashboard')
+            else:
+                return redirect('patientDetails')
+        else:
+            return redirect('index')
+    else:
+        return redirect('index')
+
+def signout(request):
+    logout(request)
+    return redirect('index')
 # API views
 @method_decorator(csrf_exempt, name='dispatch')
 class PatientDetailsView(View):

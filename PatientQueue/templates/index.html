@@ -8,7 +8,8 @@
         <div class="col-md-8 col-xs-12 col-sm-12 login_form ">
             <div class="container-fluid">
                 <div class="d-flex justify-content-center">
-                    <form control="" class="form-group">
+                    <form control="" class="form-group" action="{% url 'signin' %}" method='post'>
+                        {% csrf_token %}
                         <div class="row">
                             <input type="text" name="username" id="username" class="form__input" placeholder="Username">
                         </div>
