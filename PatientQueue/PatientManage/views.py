@@ -3,9 +3,11 @@ from django.http import JsonResponse
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
-from .models import PatientDetails
+from .models import *
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.models import User
+from django.utils import timezone
+from datetime import datetime
 # Create your views here.
 
 
@@ -42,32 +44,42 @@ def add_patient(request):
             pulse_rate=pulse_rate,
             patient_symptoms=patient_symptoms,
         )
+
         #patient.save()
         return redirect('staffDashboard')
     return render(request, 'staffs.html')
 
 
 def get_patient(request):
-    patients = PatientDetails.objects.all().values()
+    patients = PatientQueue.objects.filter(date__date=datetime.today().date())
     patient_list = []
-    for patient in patients:
+    for pat in patients:
         patient_list.append({
-            'patient_name': patient['patient_name'],
-            'patient_age': patient['patient_age'],
-            'patient_mobile': patient['patient_mobile'],
-            'weight': patient['weight'],
-            'height': patient['height'],
-            'blood_pressure': patient['blood_pressure'],
-            'temperature': patient['temperature'],
-            'blood_sugar': patient['blood_sugar'],
-            'heart_rate': patient['heart_rate'],
-            'oxygen_level': patient['oxygen_level'],
-            'pulse_rate': patient['pulse_rate'],
-            'patient_symptoms': patient['patient_symptoms'],
+            'patient_name': pat.patient.patient_name,
+            'patient_age': pat.patient.patient_age,
+            'patient_mobile': pat.patient.patient_mobile,
+            'weight': pat.patient.weight,
+            'height': pat.patient.height,
+            'blood_pressure': pat.patient.blood_pressure,
+            'temperature': pat.patient.temperature,
+            'blood_sugar': pat.patient.blood_sugar,
+            'heart_rate': pat.patient.heart_rate,
+            'oxygen_level': pat.patient.oxygen_level,
+            'pulse_rate': pat.patient.pulse_rate,
+            'patient_symptoms': pat.patient.patient_symptoms,
+            'pos':pat.quePos,
+            'status':pat.status
         })
     return JsonResponse({'patients': patient_list})
 
-
+def send_patient(request):
+    patientId = request.GET.get('patientId',None)
+    if patientId is not None:
+        patient = PatientDetails.objects.get(id=patientId)
+        queue = PatientQueue.objects.get(patient=patient)
+        queue.status = 1
+        queue.save()
+        return redirect("staffDashboard")
 
 def doctorDashboard(request):
     return render(request,'dr_d3.html')

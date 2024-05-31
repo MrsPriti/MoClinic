@@ -10,4 +10,5 @@ urlpatterns = [
     path("staffDashboard",staffDashboard,name="staffDashboard"),
     path("add_patient",add_patient,name="add_patient"),
     path("get_patient",get_patient,name="get_patient"),
+    path("send_patient",send_patient,name="send_patient")
 ]

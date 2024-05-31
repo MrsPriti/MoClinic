@@ -288,14 +288,30 @@
         let tbody = document.getElementById("patientList");
         tbody.innerHTML = "";
         patients.forEach((patient, index) => {
+          console.log(patient);
+        // Determine the status text based on the patient's status value
+        let statusText;
+        switch (patient.status) {
+            case 1:
+                statusText = "Inside";
+                break;
+            case 2:
+                statusText = "Done";
+                break;
+            case 0:
+                statusText = "Waiting";
+                break;
+            default:
+                statusText = "Unknown"; // in case there are other status values
+        }
           let row = `
-        <tr ${patient.status === "Done" ? 'class="done"' : ""}>
+        <tr ${patient.status === 1 ? 'class="done"' : ""}>
           <td>${index + 1}</td>
           <td>${patient.name}</td>
           <td>${patient.age}</td>
           <td>${patient.mobile}</td>
           <td>${patient.appointmentDate}</td>
-          <td>${patient.status}</td>
+          <td>${statusText}</td>
         </tr>
       `;
           tbody.insertAdjacentHTML("beforeend", row);
@@ -303,21 +319,7 @@
       }
 
       document.getElementById("nextPatientBtn").addEventListener("click", function () {
-        if (patients.length > 0) {
-          // Update the status of the first patient to "Done"
-          patients[0].status = "Done";
-
-          // Remove the first patient from the array and store it in a variable
-          let donePatient = patients.shift();
-
-          // Add the done patient to the end of the array
-          patients.push(donePatient);
-
-          // Display the updated patient list
-          displayPatients();
-        } else {
-          alert("No more patients in the queue!");
-        }
+        
       });
 
       document.getElementById("skipPatientBtn").addEventListener("click", function () {
@@ -341,12 +343,13 @@
           url: "{% url 'get_patient' %}",
           method: "GET",
           success: function(data) {
+            console.log(data);
             patients = data.patients.map(patient => ({
               name: patient.patient_name,
               age: patient.patient_age,
               mobile: patient.patient_mobile,
               appointmentDate: new Date().toLocaleDateString(), // Placeholder for appointment date
-              status: "Waiting"
+              status: patient.status
             }));
             displayPatients();
           },
